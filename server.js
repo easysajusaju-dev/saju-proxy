@@ -3,21 +3,21 @@ import cors from 'cors';
 import fetch from 'node-fetch';
 
 const app = express();
+app.use(cors()); // 전체 허용(간단)
 
-// CORS 전체 허용(가장 단순). 필요시 도메인 제한으로 바꿔드릴 수 있어요.
-app.use(cors());
+const UPSTREAM = 'https://my-manseryeok.onrender.com';
 
+// 살아있나 확인
 app.get('/ping', (req, res) => res.send('pong'));
 
-app.get('/proxy/saju', async (req, res) => {
+// /proxy/로 시작하는 모든 경로를 그대로 API 서버로 전달
+app.get('/proxy/*', async (req, res) => {
 try {
-const base = 'https://my-manseryeok.onrender.com/saju';
-const qs = new URLSearchParams(req.query).toString(); // year=...&month=...
-const url = base + '?' + qs;
-
+const path = req.path.replace('/proxy', ''); // 예: /saju/full
+const qs = req.url.includes('?') ? req.url.split('?')[1] : '';
+const url = ${UPSTREAM}${path}${qs ? '?' + qs : ''};
 const r = await fetch(url);
 const text = await r.text();
-
 res.set('Content-Type', r.headers.get('content-type') || 'application/json');
 res.status(r.status).send(text);
 } catch (e) {
