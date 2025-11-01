@@ -5,7 +5,9 @@ import fetch from 'node-fetch';
 const app = express();
 
 // GitHub Pages 도메인만 허용(필요시 배열에 도메인 추가)
-const allowedOrigins = ['https://easysajusaju-dev.github.io'];
+const allowedOrigins = ['https://easysajusaju-dev.github.io'
+                        'https://my-manseryeok.onrender.com' // ← 이 줄 추가
+];
 app.use(cors({ origin: allowedOrigins }));
 
 app.get('/ping', (req, res) => res.send('pong'));
