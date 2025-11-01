@@ -4,20 +4,18 @@ import fetch from 'node-fetch';
 
 const app = express();
 
-// GitHub Pages 도메인만 허용(필요시 배열에 도메인 추가)
-const allowedOrigins = ['https://easysajusaju-dev.github.io'
-                        'https://my-manseryeok.onrender.com' // ← 이 줄 추가
-];
-app.use(cors({ origin: allowedOrigins }));
+// CORS 전체 허용 (가장 간단)
+app.use(cors());
 
 app.get('/ping', (req, res) => res.send('pong'));
 
-// 프록시 엔드포인트: /proxy/saju?year=...&month=... 등
+// 프록시 엔드포인트: /proxy/saju?year=...&month=...
 app.get('/proxy/saju', async (req, res) => {
 try {
-const target = 'https://my-manseryeok.onrender.com/saju?' + new URLSearchParams(req.query);
-const r = await fetch(target);
-const text = await r.text(); // 그대로 전달
+const base = 'https://my-manseryeok.onrender.com/saju';
+const url = ${base}?${new URLSearchParams(req.query)};
+const r = await fetch(url);
+const text = await r.text();
 res.set('Content-Type', r.headers.get('content-type') || 'application/json');
 res.status(r.status).send(text);
 } catch (e) {
